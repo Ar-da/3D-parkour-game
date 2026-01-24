@@ -76,6 +76,7 @@ public class WallRunning : MonoBehaviour
 
         if (!playerMovement.wallrunning)
         {
+            
             if (isWall && isMoving && isGrounded)
             {
                 StartWallRun();
