@@ -18,8 +18,8 @@ public class PlayerLook : MonoBehaviour
         xRotation = 0f;
         transform.localRotation = Quaternion.identity; 
         playerBody.rotation = Quaternion.Euler(0f, playerBody.eulerAngles.y, 0f);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     void Update()

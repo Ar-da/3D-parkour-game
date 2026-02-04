@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Build.Content;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
 
 public class CompassBarElement : MonoBehaviour
@@ -10,32 +11,44 @@ public class CompassBarElement : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private Transform target;
     [SerializeField] private bool useFixDirection = false;
-    [SerializeField] private Vector3 fixDirection;
+    [SerializeField] private Vector3 fixDirection = Vector3.forward;
 
     private CompassBar bar;
-    private RectTransform _rectTransform;
+    private RectTransform rectTransform;
 
     private void Start()
     {
-        _rectTransform = GetComponent<RectTransform>();
+        rectTransform = GetComponent<RectTransform>();
         bar = GetComponentInParent<CompassBar>();
     }
 
     private void Update()
     {
         // ...
-        var directionToTarget = target.position - player.position;
-        directionToTarget.y = 0;
-        directionToTarget.Normalize();
+        var playerForward = player.forward;
+        playerForward.y = 0;
+        playerForward = playerForward.normalized;
         
-        var signedAngle = Vector3.SignedAngle(player.forward, directionToTarget, Vector3.up);
+        Vector3 direction;
+        if (useFixDirection)
+        {
+            direction = fixDirection;
+            direction.y = 0f;
+        }
+        else
+        {
+            direction = target.position - player.position;
+            direction.y = 0f;
+            if (direction.sqrMagnitude < 0.0001f) return;
+        }
+        direction = direction.normalized;
         
-        var halfBarRange = bar.BarRange / 2;
-        signedAngle = Mathf.Clamp(signedAngle, -halfBarRange, halfBarRange);
+        var signedAngle = Vector3.SignedAngle(playerForward, direction, Vector3.up);
+        var halfRange = bar.BarRange / 2;
+        signedAngle = Mathf.Clamp(signedAngle, -halfRange, halfRange);
         
-        float mappedAngle = signedAngle / halfBarRange;
-        var xPosition = mappedAngle * (360 / bar.BarRange) * (bar.BarRectTransform.rect.width / 2);
-        _rectTransform.anchoredPosition = new Vector2(xPosition, _rectTransform.anchoredPosition.y);
-        
+        var xPosition = (signedAngle / halfRange) * (bar.BarRectTransform.rect.width / 2);
+        rectTransform.anchoredPosition = new Vector2(xPosition, rectTransform.anchoredPosition.y);
+       
     }
 }

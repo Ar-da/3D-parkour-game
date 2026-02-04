@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     {
         baseSpeed = playerSpeed;
         controller = GetComponent<CharacterController>();
-        Cursor.visible = false;
+        //Cursor.visible = false;
         cameraTransform = Camera.main.transform;
     }
 
