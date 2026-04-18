@@ -1938,10 +1938,10 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -3188106704628532953, guid: b1e96a2ba8a78e842bfe6403bee37d1b, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 35ca794a7c7228b4bb806b6370f2f986, type: 3}
+  m_Resource: {fileID: 8300000, guid: ac425ebe49d25b340a817c03b7b56a76, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
-  m_Pitch: 1
+  m_Pitch: 0.9
   Loop: 1
   Mute: 0
   Spatialize: 0

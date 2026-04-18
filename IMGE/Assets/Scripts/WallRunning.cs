@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class WallRunning : MonoBehaviour
 {
@@ -14,16 +15,18 @@ public class WallRunning : MonoBehaviour
     [Header("Detection")] 
     public float wallCheckDistance;
     public float minJumpHeight;
-    private RaycastHit leftWallHit;
-    private RaycastHit rightWallHit;
-    private bool wallLeft;
-    private bool wallRight;
+    public RaycastHit leftWallHit; //
+    public RaycastHit rightWallHit; //
+    public bool wallLeft; //
+    public bool wallRight; //
     private float wallRunSpeed;
+    private bool hasJumped;
 
     [Header("References")] 
     public Transform orientation;
     private PlayerController playerMovement;
     private CharacterController controller;
+    public InputActionReference jumpAction;
     
     [Header("Exiting")]
     private bool exitingWall;
@@ -36,14 +39,20 @@ public class WallRunning : MonoBehaviour
         controller = GetComponent<CharacterController>();
     }
 
+    private void OnEnable()
+    {
+        jumpAction.action.Enable();
+    }
+    
+    private void OnDisable()
+    {
+        jumpAction.action.Disable();
+    }
+
     private void Update()
     {
         CheckForWall();
         StateMachine();
-    }
-
-    private void FixedUpdate()
-    {
         if (playerMovement.wallrunning) WallRunningMovement();
     }
 
@@ -68,28 +77,29 @@ public class WallRunning : MonoBehaviour
     {
         var moveInput = playerMovement.GetMoveInput();
         var verticalInput = moveInput.y;
-
         
         var isWall = wallLeft || wallRight;
         var isMoving = verticalInput > 0.1f;
-        var isGrounded = AboveGround();
+        var isAboveGround = AboveGround();
 
         if (!playerMovement.wallrunning)
         {
-            
-            if (isWall && isMoving && isGrounded)
+            if (isWall && isMoving && isAboveGround)
             {
                 StartWallRun();
             }
         }
         else
         {
-            if (!isWall || !isMoving || !isGrounded)
+            if (!playerMovement.hasWallJumped && jumpAction.action.triggered) // prevents double jump on wall
+            {
+                WallRunJump();
+            }
+            if (!isWall || !isMoving || !isAboveGround)
             {
                 StopWallRun();
             }
         }
-
     }
 
     private void StartWallRun()
@@ -100,8 +110,7 @@ public class WallRunning : MonoBehaviour
 
     private void WallRunningMovement()
     {
-        
-        wallRunTimer -= Time.fixedDeltaTime;
+        wallRunTimer -= Time.deltaTime;
         if (wallRunTimer <= 0f)
         {
             StopWallRun();
@@ -117,7 +126,23 @@ public class WallRunning : MonoBehaviour
 
         // Bewegung an der Wand
         var move = wallForward * playerMovement.wallRunSpeed;
-        controller.Move(move * Time.fixedDeltaTime);
+        controller.Move(move * Time.deltaTime);
+    }
+    
+    private void WallRunJump()
+    {
+        playerMovement.hasWallJumped = true;
+        
+        var wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
+        var forceToApply = transform.up * wallJumpUpForce + wallNormal * wallJumpSideForce;
+        
+        if (playerMovement.playerVelocity.y < 0)
+            playerMovement.playerVelocity.y = 0f;
+        
+        controller.Move(forceToApply);
+        
+        Debug.Log("We Jumped!");
+        
     }
     
     private void StopWallRun()

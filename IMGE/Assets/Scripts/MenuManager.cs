@@ -9,6 +9,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private MonoBehaviour lookScript;
     [SerializeField] private InputActionReference pauseAction;
     [SerializeField] private Canvas CompassBarCanvas;
+    [SerializeField] private Toggle sprintToggle;
+    [SerializeField] private PlayerController playerController;
 
     private bool isOpen;
 
@@ -16,6 +18,15 @@ public class MenuManager : MonoBehaviour
     private void Start()
     {
         CloseMenu();
+        bool savedValue = PlayerPrefs.GetInt("SprintToggle", 0) == 1;
+        sprintToggle.isOn = savedValue;
+        playerController.SetSprintToggleMode(savedValue);
+        sprintToggle.onValueChanged.AddListener(OnSprintToggleChanged);
+    }
+    
+    private void OnSprintToggleChanged(bool value)
+    {
+        playerController.SetSprintToggleMode(value);
     }
     
     private void OnEnable()

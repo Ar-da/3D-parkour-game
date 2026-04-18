@@ -5,29 +5,29 @@ using UnityEngine.InputSystem;
 public class PlayerLook : MonoBehaviour
 {
     public InputActionReference lookAction;
-    public float sensitivity = 50f;
+    public float sensitivity = 30f;
 
-    private float xRotation = 0f;
+    private float xRotation;
     public Transform playerBody;
 
-    void OnEnable() => lookAction.action.Enable();
-    void OnDisable() => lookAction.action.Disable();
+    private void OnEnable() => lookAction.action.Enable();
+    private void OnDisable() => lookAction.action.Disable();
 
     private void Start()
     {
         xRotation = 0f;
         transform.localRotation = Quaternion.identity; 
         playerBody.rotation = Quaternion.Euler(0f, playerBody.eulerAngles.y, 0f);
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    void Update()
+    private void Update()
     {
-        Vector2 look = lookAction.action.ReadValue<Vector2>();
+        var look = lookAction.action.ReadValue<Vector2>();
 
-        float mouseX = look.x * sensitivity * Time.deltaTime;
-        float mouseY = look.y * sensitivity * Time.deltaTime;
+        var mouseX = look.x * sensitivity * Time.deltaTime;
+        var mouseY = look.y * sensitivity * Time.deltaTime;
 
         // Vertikale Rotation (Kamera)
         xRotation -= mouseY;
@@ -37,4 +37,6 @@ public class PlayerLook : MonoBehaviour
         // Horizontale Rotation (Player)
         playerBody.Rotate(Vector3.up * mouseX);
     }
+    
+    public void SetSensitivity(float newSensitivity) => this.sensitivity = newSensitivity;
 }

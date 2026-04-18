@@ -297,13 +297,14 @@ GameObject:
   - component: {fileID: 7864498484400340519}
   - component: {fileID: 3157898414871776680}
   - component: {fileID: 4734892994732960313}
+  - component: {fileID: 8517371992878872509}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1004493560318506989
 Transform:
   m_ObjectHideFlags: 0
@@ -358,8 +359,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e453246948c779f49bbbc9ea2c937525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  playerSpeed: 5
-  playerSprintSpeed: 7
+  playerSpeed: 6
+  playerSprintSpeed: 8
   isSprinting: 0
   jumpHeight: 1
   wallRunSpeed: 6
@@ -392,6 +393,22 @@ MonoBehaviour:
   minJumpHeight: 1.5
   orientation: {fileID: 7327936702062231625}
   exitWallTime: 5
+--- !u!114 &8517371992878872509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7433021391918002550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c997438f1a846348b9920f4a9769f09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Respawn
+  respawnPoint: {fileID: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &8635637585492797931
 GameObject:
   m_ObjectHideFlags: 0
